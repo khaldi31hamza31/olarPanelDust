@@ -1,0 +1,8 @@
+[0-9]*/
+postProcessing/
+log.*
+*.log
+*.swp
+*~
+*.foam
+*.OpenFOAM
