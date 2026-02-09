@@ -1,0 +1,66 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM : The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version : 2506                                   |
+|   \\  /    A nd           | Website : www.openfoam.com                       |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     simpleFoam;     // Solveur steady-state RANS
+
+startFrom       startTime;
+startTime       0;
+
+stopAt          endTime;
+endTime         1000;           // 1000 itérations
+
+deltaT          1;
+
+writeControl    timeStep;
+writeInterval   50;             // Écrire tous les 50 pas de temps
+
+purgeWrite      0;
+writeFormat     ascii;
+writePrecision  6;
+writeCompression off;
+
+timeFormat      general;
+timePrecision   6;
+
+runTimeModifiable true;
+
+// Fonctions pour le post-traitement
+functions
+{
+    forces
+    {
+        type        forces;
+        libs        ("libforces.so");
+        patches     (solarPanel);
+        rho         rhoInf;
+        rhoInf      1.225;          // Densité de l'air kg/m^3
+        CofR        (0 0 0);
+        writeControl timeStep;
+        writeInterval 10;
+    }
+
+    residuals
+    {
+        type        residuals;
+        libs        ("libutilityFunctionObjects.so");
+        writeControl timeStep;
+        writeInterval 1;
+        fields      (U p k epsilon);
+    }
+}
